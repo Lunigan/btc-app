@@ -1,11 +1,82 @@
-﻿@{
+﻿@model DashboardViewModel
+@{
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">BTC</h1>
+<div class="container">
+
+    <div class="row row-cols-1">
+        <h1 class="display-4">BTC Trend</h1>
+        <canvas id="btcCzkChart" width="600" height="400"></canvas>
+    </div>
+
+    <div class="row row-cols-1">
+        <h1 class="display-4">Měna</h1>
+        <table id="currency-rates">
+            <tr>
+                <th class="currency-source">Cizí měna</th>
+                <th class="conversion">
+                    <img src="/img/arrow-right.svg" />
+                </th>
+                <th class="currency-target">CZK</th>
+            </tr>
+            <tr>
+                @foreach (var item in Model.CurrencyRates)
+                {
+                    <tr>
+                        <td>
+                            <span class="source currency-amount">@item.Amount </span>
+                            <span class="source currency-code">@item.SourceCurrencyCode</span>
+                            <span class="source currency-flag">
+                                <img src="@($"/img/{item.SourceCurrencyCode}.webp")" />
+                            </span>
+                        </td>
+
+                        <td>
+                            <img src="/img/arrow-right.svg" />
+                        </td>
+
+                        <td>
+                            <span class="target currency-amount">@item.Rate </span>
+                            <span class="target currency-code">@item.TargetCurrencyCode</span>
+                            <span class="target currency-flag">
+                                <img src="@($"/img/{item.TargetCurrencyCode}.webp")" />
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tr>
+        </table>
+    </div>
+
 </div>
 
-<div class="text-center">
-    <h1 class="display-4">Měna</h1>
-</div>
+<script>
+    window.chartLabels = @Html.Raw(Json.Serialize(Model.BtcRateRecords.Select(p => p.Timestamp.ToString("dd.MM.yyyy - HH:mm"))));
+    window.chartData = @Html.Raw(Json.Serialize(Model.BtcRateRecords.Select(p => p.BtcCzkPrice)));
+</script>
+
+
+@* <script>
+    const labels = [
+        @foreach (var point in Model.BtcRateRecords)
+        {
+            @($"'{point.Timestamp:dd-MM-yyyy HH:mm}'")
+            if (point != Model.BtcRateRecords.Last())
+            {
+                @(", ")
+            }
+        }
+    ];
+
+    const data = [
+        @foreach (var point in Model.BtcRateRecords)
+        {
+            @($"{point.BtcCzkPrice}")
+            if (point != Model.BtcRateRecords.Last())
+            {
+                @(", ")
+            }
+        }
+    ];
+</script> *@

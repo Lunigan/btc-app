@@ -1,0 +1,51 @@
+﻿body {
+    h1 {
+        margin-top: 2rem !important;
+    }
+
+    #currency-rates {
+        max-width: 350px;
+        position: relative;
+        margin: 0 auto 0 auto;
+        border: 1px solid #AAA;
+
+        tr {
+            border: 1px solid #CCC;
+
+            th {
+                font-size: 1.25rem;
+
+                &.currency-source,
+                &.currency-target {
+                    max-width: 150px;
+                }
+
+                &.conversion {
+                    max-width: 50px;
+                }
+            }
+
+            td {
+                font-size: 1rem;
+                max-width: 150px;
+
+                .currency-flag {
+                    margin-left: 1rem;
+
+                    img {
+                        max-height: 2rem;
+                    }
+                }
+            }
+        }
+
+        td, th {
+            padding: .5rem;
+        }
+    }
+
+    footer.footer#footer {
+        position: relative;
+        margin-top: 5rem;
+    }
+}

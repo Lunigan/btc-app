@@ -30,8 +30,10 @@
 //    });
 //}
 
+"use strict";
+
 if (window.chartLabels && window.chartData) {
-    const ctx = document.getElementById("btcCzkChart").getContext("2d");
+    var ctx = document.getElementById("btcCzkChart").getContext("2d");
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -47,3 +49,4 @@ if (window.chartLabels && window.chartData) {
         }
     });
 }
+
