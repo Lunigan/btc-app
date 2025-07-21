@@ -23,23 +23,31 @@ namespace Btc.App.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var rateViewModel = _currencyService.GetLatestRates();
-            var btcViewModel = _btcService.GetLatestBtcRateRecords();
-
             var viewModel = new DashboardViewModel
             {
-                BtcRateRecords = btcViewModel,
-                CurrencyRates = rateViewModel
+                BtcRateRecords = await _btcService.GetLatestBtcRateRecords()
             };
-
             return View(viewModel);
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Currencies()
         {
-            return View();
+            var viewModel = new DashboardViewModel
+            {
+                CurrencyRates = await _currencyService.GetLatestRates()
+            };
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Snapshots()
+        {
+            var viewModel = new DashboardViewModel
+            {
+                BtcRateRecordSnapshots = await _btcService.GetSnapshots()
+            };
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

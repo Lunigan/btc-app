@@ -1,0 +1,49 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Měny";
+}
+
+<div class="container">
+    <div class="row row-cols-1">
+        <h1 class="display-4 mb-3">Měna</h1>
+        <table id="currency-rates">
+            <tr>
+                <th class="currency-source">Cizí měna</th>
+                <th class="conversion">
+                    <img src="/img/arrow-right.svg" />
+                </th>
+                <th class="currency-target">CZK</th>
+            </tr>
+            @foreach (var item in Model.CurrencyRates)
+            {
+                <tr>
+                    <td class="source">
+                        <span class="source currency-amount">@item.Amount </span>
+                        <span class="source currency-code">@item.SourceCurrencyCode</span>
+                        <span class="source currency-flag">
+                            <img src="@($"/img/{item.SourceCurrencyCode}.webp")" />
+                        </span>
+                    </td>
+
+                    <td class="conversion">
+                        <img src="/img/arrow-right.svg" />
+                    </td>
+
+                    <td class="target">
+                        <span class="target currency-amount">@item.Rate </span>
+                        <span class="target currency-code">@item.TargetCurrencyCode</span>
+                        <span class="target currency-flag">
+                            <img src="@($"/img/{item.TargetCurrencyCode}.webp")" />
+                        </span>
+                    </td>
+                </tr>
+            }
+            @if (Model.CurrencyRates.Count < 1)
+            {
+                <tr>
+                    <td class="no-records" colspan="3"><span>Nebyly nalezeny žádné záznamy.</span></td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

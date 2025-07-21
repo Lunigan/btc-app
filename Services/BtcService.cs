@@ -5,76 +5,54 @@ namespace Btc.App.Services
 {
     public class BtcService : IBtcService
     {
-        public BtcService()
+        private readonly IHttpService _httpService;
+
+        private const string BTC_API_BASE_URL = "https://localhost:44391/api/bitcoin/rates";
+        private const string BTC_API_LATEST_URL = "/latest";
+        private const string BTC_API_CHECK_URL = "/check";
+        private const string BTC_API_SNAPSHOT_URL = "/snapshots";
+        private const string BTC_API_SAVE_URL = "/save";
+        private const string BTC_API_DELETE_MANY_URL = "/delete-many";
+
+        public BtcService(IHttpService httpService)
         {
-            
+            _httpService = httpService;
         }
 
-        /// <summary>
-        /// TODO: implemenmt http serrvice and api call to get rate records from last 24h
-        /// </summary>
-        /// <returns></returns>
-        public List<BtcRateRecordViewModel> GetLatestBtcRateRecords()
+        public async Task<bool> CheckForUpdates(DateTime lastTimestamp)
         {
-            return new List<BtcRateRecordViewModel>
-            {
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 102094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 14, 34, 0)
-                },
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 101094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 14, 20, 0)
-                },
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 104094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 14, 05, 0)
-                },
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 100094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 13, 46, 0)
-                },
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 106094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 13, 34, 0)
-                },
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 105094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 13, 20, 0)
-                },
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 110094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 12, 59, 0)
-                },
-                new BtcRateRecordViewModel
-                {
-                    BtcEurPrice = 115094.39M,
-                    Eur2Czk = 24.21M,
-                    Instrument = "BTC-EUR",
-                    Timestamp = new DateTime(2025, 7, 20, 12, 46, 0)
-                }
-            }.OrderBy(x => x.Timestamp).ToList();
+            return await _httpService
+                .PostAsync($"{BTC_API_BASE_URL}{BTC_API_LATEST_URL}{BTC_API_CHECK_URL}", new { lastTimestamp });
+        }
+
+        public async Task DeleteSnapshots(List<int> ids)
+        {
+            await _httpService.PostAsync($"{BTC_API_BASE_URL}{BTC_API_SNAPSHOT_URL}{BTC_API_DELETE_MANY_URL}", ids);
+        }
+
+        public async Task<List<BtcRateRecordViewModel>> GetLatestBtcRateRecords()
+        {
+            var response = await _httpService
+                .GetAsync<List<BtcRateRecordViewModel>>($"{BTC_API_BASE_URL}{BTC_API_LATEST_URL}");
+
+            if (response == null || response.Count < 1) return [];
+
+            return response;
+        }
+
+        public async Task<List<BtcRateRecordViewModel>> GetSnapshots()
+        {
+            var response = await _httpService
+                .GetAsync<List<BtcRateRecordViewModel>>($"{BTC_API_BASE_URL}{BTC_API_SNAPSHOT_URL}");
+
+            if (response == null || response.Count < 1) return [];
+
+            return response;
+        }
+
+        public async Task<bool> SaveRecord(BtcRateRecordViewModel viewModel)
+        {
+            return await _httpService.PostAsync($"{BTC_API_BASE_URL}{BTC_API_SNAPSHOT_URL}{BTC_API_SAVE_URL}", viewModel);
         }
     }
 }

@@ -6,47 +6,63 @@
 <div class="container">
 
     <div class="row row-cols-1">
-        <h1 class="display-4">BTC Trend</h1>
-        <canvas id="btcCzkChart" width="600" height="400"></canvas>
-    </div>
-
-    <div class="row row-cols-1">
-        <h1 class="display-4">Měna</h1>
-        <table id="currency-rates">
+        <h1 class="display-4 mb-3">BTC Kurz</h1>
+        <table id="btc-rates">
             <tr>
-                <th class="currency-source">Cizí měna</th>
+                <th class="btc-timestamp">Timestamp</th>
+                <th class="btc-price">BTC/EUR</th>
                 <th class="conversion">
                     <img src="/img/arrow-right.svg" />
                 </th>
-                <th class="currency-target">CZK</th>
+                <th class="btc-price">BTC/CZK</th>
+                <th class="table-action"></th>
             </tr>
-            <tr>
-                @foreach (var item in Model.CurrencyRates)
-                {
-                    <tr>
-                        <td>
-                            <span class="source currency-amount">@item.Amount </span>
-                            <span class="source currency-code">@item.SourceCurrencyCode</span>
-                            <span class="source currency-flag">
-                                <img src="@($"/img/{item.SourceCurrencyCode}.webp")" />
-                            </span>
-                        </td>
+            @foreach (var item in Model.BtcRateRecords)
+            {
+                <tr>
+                    <td class="btc-record-timestamp">@item.Timestamp</td>
+                    <td>
+                        <span class="source btc-price">@item.BtcEurPrice.ToString("F6") </span>
+                        <span class="source currency-code">EUR</span>
+                        <span class="source currency-flag">
+                            <img src="@($"/img/EUR.webp")" />
+                        </span>
+                    </td>
 
-                        <td>
-                            <img src="/img/arrow-right.svg" />
-                        </td>
+                    <td>
+                        <img src="/img/arrow-right.svg" />
+                    </td>
 
-                        <td>
-                            <span class="target currency-amount">@item.Rate </span>
-                            <span class="target currency-code">@item.TargetCurrencyCode</span>
-                            <span class="target currency-flag">
-                                <img src="@($"/img/{item.TargetCurrencyCode}.webp")" />
-                            </span>
-                        </td>
-                    </tr>
-                }
-            </tr>
+                    <td>
+                        <span class="target btc-price">@item.BtcCzkPrice.ToString("F6") </span>
+                        <span class="target currency-code">CZK</span>
+                        <span class="target currency-flag">
+                            <img src="@($"/img/CZK.webp")" />
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="btc-record-save btn btn-primary"
+                            data-btceur="@item.BtcEurPrice"
+                            data-eurczk="@item.Eur2Czk"
+                            data-instrument="@item.Instrument"
+                            data-timestamp="@item.Timestamp"
+                        >Uložit</button>
+                    </td>
+                </tr>
+            }
+            @if (Model.BtcRateRecords.Count < 1)
+            {
+                <tr>
+                    <td class="no-records" colspan="5"><span>Nebyly nalezeny žádné záznamy.</span></td>
+                </tr>
+            }
         </table>
+    </div>
+
+    <div class="row row-cols-1">
+        <h1 class="display-4 mb-3">BTC Trend</h1>
+        <canvas id="btcCzkChart" width="600" height="400"></canvas>
     </div>
 
 </div>
@@ -55,28 +71,3 @@
     window.chartLabels = @Html.Raw(Json.Serialize(Model.BtcRateRecords.Select(p => p.Timestamp.ToString("dd.MM.yyyy - HH:mm"))));
     window.chartData = @Html.Raw(Json.Serialize(Model.BtcRateRecords.Select(p => p.BtcCzkPrice)));
 </script>
-
-
-@* <script>
-    const labels = [
-        @foreach (var point in Model.BtcRateRecords)
-        {
-            @($"'{point.Timestamp:dd-MM-yyyy HH:mm}'")
-            if (point != Model.BtcRateRecords.Last())
-            {
-                @(", ")
-            }
-        }
-    ];
-
-    const data = [
-        @foreach (var point in Model.BtcRateRecords)
-        {
-            @($"{point.BtcCzkPrice}")
-            if (point != Model.BtcRateRecords.Last())
-            {
-                @(", ")
-            }
-        }
-    ];
-</script> *@

@@ -4,6 +4,10 @@ namespace Btc.App.ViewModels
 {
     public class BtcRateRecordViewModel
     {
+
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
         [JsonProperty("instrument")]
         public string Instrument { get; set; } = "BTC-EUR";
 
@@ -18,5 +22,8 @@ namespace Btc.App.ViewModels
 
         [JsonProperty("timestamp")]
         public DateTime Timestamp { get; set; }
+
+        [JsonProperty("note")]
+        public string Note { get; set; }
     }
 }

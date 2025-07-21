@@ -1,0 +1,78 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "BTC/CZK Snapshots";
+}
+
+<div class="container">
+    <div class="row row-cols-1" style="position: relative;">
+        <h1 class="display-4 mb-3">BTC/CZK Snapshots</h1>
+        <button id="delete-selected" class="btn btn-danger">Smazat vybrané</button>
+        <div class="md-table-wrapper">
+            <table id="btc-rates-snapshots">
+                <thead>
+                    <tr>
+                        <th class="btc-check"><input type="checkbox" id="select-all" /></th>
+                        <th class="btc-timestamp">Timestamp</th>
+                        <th class="btc-price">BTC/EUR</th>
+                        <th class="conversion">
+                            <img src="/img/arrow-right.svg" />
+                        </th>
+                        <th class="btc-price">BTC/CZK</th>
+                        <th class="btc-note">Poznámka</th>
+                        <th class="table-action"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.BtcRateRecordSnapshots)
+                    {
+                        <tr>
+                            <td><input type="checkbox" class="row-check" data-id="@item.Id" /></td>
+                            <td>@item.Timestamp</td>
+                            <td>
+                                <span class="source btc-price">@item.BtcEurPrice.ToString("F6") </span>
+                                <span class="source currency-code">EUR</span>
+                                <span class="source currency-flag">
+                                    <img src="@($"/img/EUR.webp")" />
+                                </span>
+                            </td>
+
+                            <td>
+                                <img src="/img/arrow-right.svg" />
+                            </td>
+
+                            <td>
+                                <span class="target btc-price">@item.BtcCzkPrice.ToString("F6") </span>
+                                <span class="target currency-code">CZK</span>
+                                <span class="target currency-flag">
+                                    <img src="@($"/img/CZK.webp")" />
+                                </span>
+                            </td>
+
+                            <td>
+                                <input type="text" name="btc-note" value="@item.Note" placeholder="Zde vepište poznámku" required/>
+                            </td>
+
+                            <td>
+                                <button class="btc-record-save btn btn-primary"
+                                    data-id="@item.Id"
+                                    data-btceur="@item.BtcEurPrice"
+                                    data-eurczk="@item.Eur2Czk"
+                                    data-instrument="@item.Instrument"
+                                    data-timestamp="@item.Timestamp"
+                                >
+                                    Uložit
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    @if (Model.BtcRateRecordSnapshots.Count < 1)
+                    {
+                        <tr>
+                            <td class="no-records" colspan="6"><span>Nebyly nalezeny žádné záznamy.</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
